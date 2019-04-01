@@ -10,10 +10,8 @@ import org.springframework.core.io.FileSystemResource;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: jdepons
- * Date: 4/26/12
- * Time: 12:55 PM
+ * @author jdepons
+ * @since 4/26/12
  * Pipeline job to index full annot table.  The index allows for querying of child terms based on an annotation
  */
 public class FullAnnotIndex {
@@ -63,6 +61,7 @@ public class FullAnnotIndex {
         long time0 = System.currentTimeMillis();
 
         log.info(getVersion());
+        log.info("   "+dao.getConnectionInfo());
 
         dao.prepareSqlStatements();
 

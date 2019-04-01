@@ -1,3 +1,6 @@
+v. 2.2.4 (Apr 1, 2019)
+  fixed logging
+
 v. 2.2.3 (Sep 25, 2018)
   moved from subversion to github
 

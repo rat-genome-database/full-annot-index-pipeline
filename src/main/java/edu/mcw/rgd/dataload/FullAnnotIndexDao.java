@@ -3,44 +3,39 @@ package edu.mcw.rgd.dataload;
 import edu.mcw.rgd.dao.impl.OntologyXDAO;
 import edu.mcw.rgd.dao.spring.StringListQuery;
 import edu.mcw.rgd.datamodel.ontologyx.Ontology;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
 import org.springframework.jdbc.object.MappingSqlQuery;
 import org.springframework.jdbc.object.SqlUpdate;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: mtutaj
- * Date: 2/6/15
- * Time: 2:41 PM
- * <p>
+ * @author mtutaj
+ * @since 2/6/15
  * encapsulates all dao code
  */
 public class FullAnnotIndexDao {
 
-    private Log logInserted = LogFactory.getLog("inserted");
-    private Log logDeleted = LogFactory.getLog("deleted");
+    private Logger logInserted = Logger.getLogger("inserted");
+    private Logger logDeleted = Logger.getLogger("deleted");
     private OntologyXDAO dao = new OntologyXDAO();
     private BatchSqlUpdate suInsert;
     private SqlUpdate suDelete;
 
-    DataSource getDataSource() throws Exception {
-        return dao.getDataSource();
+    public String getConnectionInfo() {
+        return dao.getConnectionInfo();
     }
 
     public Map<Integer, String> getFullAnnotInfo(String aspect) throws Exception {
         // read all full_annot_key, term_acc into a map
         final Map<Integer, String> map = new HashMap<Integer, String>();
         String query = "SELECT full_annot_key,term_acc FROM full_annot WHERE aspect=?";
-        MappingSqlQuery q = new MappingSqlQuery(this.getDataSource(), query) {
+        MappingSqlQuery q = new MappingSqlQuery(dao.getDataSource(), query) {
             @Override
             protected Object mapRow(ResultSet rs, int i) throws SQLException {
                 int fullAnnotKey = rs.getInt("full_annot_key");
@@ -57,13 +52,13 @@ public class FullAnnotIndexDao {
 
 
     public void prepareSqlStatements() throws Exception {
-        suInsert = new BatchSqlUpdate(this.getDataSource(),
+        suInsert = new BatchSqlUpdate(dao.getDataSource(),
                 "INSERT /*+ APPEND */ INTO full_annot_index (full_annot_key, term_acc) VALUES(?,?)",
                 new int[]{Types.INTEGER, Types.VARCHAR},
                 100);
         suInsert.compile();
 
-        suDelete = new SqlUpdate(this.getDataSource(),
+        suDelete = new SqlUpdate(dao.getDataSource(),
                 "DELETE FROM full_annot_index WHERE full_annot_key=? AND term_acc=?");
         suDelete.declareParameter(new SqlParameter(Types.INTEGER));
         suDelete.declareParameter(new SqlParameter(Types.VARCHAR));
