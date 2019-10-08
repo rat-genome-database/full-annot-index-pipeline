@@ -89,7 +89,7 @@ public class FullAnnotIndexDao {
     public Collection<String> getAllActiveTermAncestorAccIds(String termAcc) throws Exception {
         Collection<String> ancestorTerms = _cacheAncestorTerms.get(termAcc);
         if( ancestorTerms==null ) {
-            ancestorTerms = new HashSet(dao.getAllActiveTermAncestorAccIds(termAcc));
+            ancestorTerms = new HashSet<>(dao.getAllActiveTermAncestorAccIds(termAcc));
             ancestorTerms.add(termAcc);
 
             _cacheAncestorTerms.put(termAcc, ancestorTerms);
