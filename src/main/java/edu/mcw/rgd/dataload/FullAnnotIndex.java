@@ -7,6 +7,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.FileSystemResource;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -62,6 +63,8 @@ public class FullAnnotIndex {
 
         log.info(getVersion());
         log.info("   "+dao.getConnectionInfo());
+        SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        log.info("   started at "+sdt.format(new Date(time0)));
 
         dao.prepareSqlStatements();
 
@@ -100,7 +103,7 @@ public class FullAnnotIndex {
         long time0 = System.currentTimeMillis();
 
         String msg = "Indexing for aspect " + aspect + " - " + new Date();
-        log.info(msg);
+        log.debug(msg);
 
         rowsInsertedForAspect = 0;
         rowsDeletedForAspect = 0;
