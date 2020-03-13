@@ -7,6 +7,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.FileSystemResource;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -52,7 +53,7 @@ public class FullAnnotIndex {
             manager.run(args);
 
         }catch (Exception e) {
-            manager.log.error(e);
+            Utils.printStackTrace(e, manager.log);
             throw e;
         }
     }
@@ -84,14 +85,14 @@ public class FullAnnotIndex {
             }
         }
 
-        msg = " TOTAL ROWS MATCHING "+rowsMatching;
+        msg = " TOTAL ROWS MATCHING  "+Utils.formatThousands(rowsMatching);
         log.info(msg);
-        msg = " TOTAL ROWS INSERTED "+rowsInserted;
+        msg = " TOTAL ROWS INSERTED  "+Utils.formatThousands(rowsInserted);
         log.info(msg);
-        msg = " TOTAL ROWS DELETED  "+rowsDeleted;
+        msg = " TOTAL ROWS DELETED   "+Utils.formatThousands(rowsDeleted);
         log.info(msg);
 
-        msg = "\n      Indexing Complete : " + new Date();
+        msg = "\n      Indexing Complete : " + (new Timestamp(System.currentTimeMillis())).toString();
         log.info(msg);
 
         dao.releaseSqlStatements();
