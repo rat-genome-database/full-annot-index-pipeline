@@ -34,14 +34,9 @@ public class FullAnnotIndex {
     public static void main(String[] args) throws Exception {
 
         if (args.length < 1) {
-            System.out.println("Usage: java -jar fullAnnotIndex.jar [aspect 1] [...] [aspect n]");
-            System.out.println("Available options: \nD (Disease)\nW (Pathway)\nN (Mammalian Phenotype)\nB (Neuro)\n"+
-                "C (Cellular Component)\nF (Molecular Function)\nP (Biological Process)\nE (CHebI)\netc \n"+
-                "* (All public ontologies in the database)\n"+
-                    "--fixRogueRows: delete those rows from FULL_ANNOT_INDEX table that violate integrity constraints on the table"
-            );
-            System.out.println("\nNote: you can specify 0, 1 or multiple options on the command line.");
-            System.out.println("\n  Options will be processed in the order as specified on the cmdline.");
+            System.out.println("Usage: specify at least one aspect code on the command line");
+            System.out.println("   f.e. D for disease ontology, W for pathway ontology, * for all public ontologies etc.");
+            System.out.println("--fixRogueRows: delete those rows from FULL_ANNOT_INDEX table that violate integrity constraints on the table");
             System.exit(0);
         }
 

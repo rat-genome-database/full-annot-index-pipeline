@@ -1,3 +1,6 @@
+Feb 09, 2021
+  updated 'usage' message
+
 Mar 13, 2020
   tuned up summary email
 
