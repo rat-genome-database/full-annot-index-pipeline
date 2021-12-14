@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class FullAnnotIndex {
 
-    Logger log = LogManager.getLogger("core");
+    Logger log = LogManager.getLogger("status");
     FullAnnotIndexDao dao = new FullAnnotIndexDao();
 
     long rowsInserted = 0;
