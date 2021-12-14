@@ -9,5 +9,5 @@ fi
 
 $APPHOME/index.sh "*"
 
-mailx -s "[$SERVER] Output from full annot index pipeline" $EMAIL_LIST < $APPHOME/logs/core.log
+mailx -s "[$SERVER] Output from full annot index pipeline" $EMAIL_LIST < $APPHOME/logs/summary.log
 
