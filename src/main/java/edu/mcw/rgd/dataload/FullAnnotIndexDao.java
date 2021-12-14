@@ -3,7 +3,8 @@ package edu.mcw.rgd.dataload;
 import edu.mcw.rgd.dao.impl.OntologyXDAO;
 import edu.mcw.rgd.dao.spring.StringListQuery;
 import edu.mcw.rgd.datamodel.ontologyx.Ontology;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
 import org.springframework.jdbc.object.MappingSqlQuery;
@@ -21,8 +22,8 @@ import java.util.*;
  */
 public class FullAnnotIndexDao {
 
-    private Logger logInserted = Logger.getLogger("inserted");
-    private Logger logDeleted = Logger.getLogger("deleted");
+    private Logger logInserted = LogManager.getLogger("inserted");
+    private Logger logDeleted = LogManager.getLogger("deleted");
     private OntologyXDAO dao = new OntologyXDAO();
     private BatchSqlUpdate suInsert;
     private SqlUpdate suDelete;

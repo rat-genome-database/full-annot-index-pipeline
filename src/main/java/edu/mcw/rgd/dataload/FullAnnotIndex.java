@@ -2,11 +2,14 @@ package edu.mcw.rgd.dataload;
 
 import edu.mcw.rgd.process.Utils;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.FileSystemResource;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -18,7 +21,7 @@ import java.util.*;
  */
 public class FullAnnotIndex {
 
-    Logger log = Logger.getLogger("core");
+    Logger log = LogManager.getLogger("core");
     FullAnnotIndexDao dao = new FullAnnotIndexDao();
 
     long rowsInserted = 0;
@@ -48,7 +51,10 @@ public class FullAnnotIndex {
             manager.run(args);
 
         }catch (Exception e) {
-            Utils.printStackTrace(e, manager.log);
+            // print stack trace to error stream
+            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+            e.printStackTrace(new PrintStream(bs));
+            manager.log.error(bs.toString());
             throw e;
         }
     }
