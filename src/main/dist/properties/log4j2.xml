@@ -17,13 +17,13 @@
             <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
         </File>
 
-        <RollingFile name="inserted" append="true" fileName="logs/inserted.log" filePattern="logs/annots_inserted.log.%d{yyyy-MM}">
+        <RollingFile name="inserted" append="true" fileName="logs/inserted.log" filePattern="logs/inserted.log.%d{yyyy-MM}">
             <PatternLayout pattern="[%d] - %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
             </Policies>
         </RollingFile>
-        <RollingFile name="deleted" append="true" fileName="logs/deleted.log" filePattern="logs/annots_deleted.log.%d{yyyy-MM}">
+        <RollingFile name="deleted" append="true" fileName="logs/deleted.log" filePattern="logs/deleted.log.%d{yyyy-MM}">
             <PatternLayout pattern="[%d] - %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
