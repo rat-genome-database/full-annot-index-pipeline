@@ -8,7 +8,6 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.FileSystemResource;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -89,7 +88,7 @@ public class FullAnnotIndex {
         msg = " TOTAL ROWS DELETED   "+Utils.formatThousands(rowsDeleted);
         log.info(msg);
 
-        msg = "\n      Indexing Complete : " + (new Timestamp(System.currentTimeMillis())).toString();
+        msg = "\n";
         log.info(msg);
 
         dao.releaseSqlStatements();
