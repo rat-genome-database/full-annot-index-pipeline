@@ -8,8 +8,6 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.FileSystemResource;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -52,9 +50,7 @@ public class FullAnnotIndex {
 
         }catch (Exception e) {
             // print stack trace to error stream
-            ByteArrayOutputStream bs = new ByteArrayOutputStream();
-            e.printStackTrace(new PrintStream(bs));
-            manager.log.error(bs.toString());
+            Utils.printStackTrace(e, manager.log);
             throw e;
         }
     }
@@ -98,7 +94,10 @@ public class FullAnnotIndex {
 
         dao.releaseSqlStatements();
 
-        log.info(" === TOTAL ELAPSED TIME: "+ Utils.formatElapsedTime(time0, System.currentTimeMillis()));
+        long time1 = System.currentTimeMillis();
+        log.info("   finished at "+sdt.format(new Date(time1)));
+        log.info(" === TOTAL ELAPSED TIME: "+ Utils.formatElapsedTime(time0, time1));
+        log.info("");
     }
 
     void runForAspect(String aspect) throws Exception {
