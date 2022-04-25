@@ -4,7 +4,7 @@ APPHOME=/home/rgddata/pipelines/fullAnnotIndex
 SERVER=`hostname -s | tr '[a-z]' '[A-Z]'`
 EMAIL_LIST=mtutaj@mcw.edu
 if [ "$SERVER" == "REED" ]; then
-  EMAIL_LIST=rgd.developers@mcw.edu
+  EMAIL_LIST=rgd.devops@mcw.edu
 fi
 
 $APPHOME/index.sh "*"
