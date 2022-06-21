@@ -2,7 +2,7 @@
 
 <beans>
 	<bean id="manager" class="edu.mcw.rgd.dataload.FullAnnotIndex">
-        <property name="version" value="FullAnnotIndex Pipeline  -- build Apr 25, 2022" />
+        <property name="version" value="FullAnnotIndex Pipeline  -- build Jun 21, 2022" />
 	</bean>
 
 </beans>
