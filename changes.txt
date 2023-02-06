@@ -1,3 +1,6 @@
+Feb 06, 2023
+  updated build.gradle to be gradle 6.x + compatible
+
 Jun 21, 2022
   handling oracle jdbc via gradle dependency
 
