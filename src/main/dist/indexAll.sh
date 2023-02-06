@@ -7,7 +7,7 @@ if [ "$SERVER" == "REED" ]; then
   EMAIL_LIST=rgd.devops@mcw.edu
 fi
 
-$APPHOME/index.sh "*"
+$APPHOME/index.sh "*" >/dev/null 2>&1
 
 mailx -s "[$SERVER] Output from full annot index pipeline" $EMAIL_LIST < $APPHOME/logs/summary.log
 
