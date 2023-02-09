@@ -1,3 +1,6 @@
+Feb 09, 2023
+  renamed to 'full-annot-index-pipeline'
+
 Feb 06, 2023
   updated build.gradle to be gradle 6.x + compatible
 

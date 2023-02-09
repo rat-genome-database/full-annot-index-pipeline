@@ -2,7 +2,7 @@
 # shell script to run fullAnnotIndex pipeline
 . /etc/profile
 
-APPNAME=fullAnnotIndex
+APPNAME="full-annot-index-pipeline"
 APPDIR=/home/rgddata/pipelines/$APPNAME
 
 cd $APPDIR

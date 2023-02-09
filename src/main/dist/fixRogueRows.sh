@@ -4,6 +4,7 @@
 # Note: if you want to run this script of a prod database,
 #    point to correct config file, f.e. lomu.xml or eales.xml
 #
-APPHOME=/home/rgddata/pipelines/fullAnnotIndex
+APPNAME="full-annot-index-pipeline"
+APPHOME=/home/rgddata/pipelines/$APPNAME
 
 $APPHOME/_run.sh --fixRogueRows
