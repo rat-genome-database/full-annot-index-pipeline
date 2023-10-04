@@ -1,3 +1,6 @@
+Oct 04, 2023
+  renamed 'master' to 'main'
+
 Feb 09, 2023
   renamed to 'full-annot-index-pipeline'
 
@@ -8,8 +11,6 @@ Jun 21, 2022
   handling oracle jdbc via gradle dependency
 
 Apr 25, 2022
-  tuned up logging
-
 Dec 17, 2021
   tuned up logging
 
