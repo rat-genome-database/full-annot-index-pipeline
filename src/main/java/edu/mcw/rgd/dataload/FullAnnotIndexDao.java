@@ -73,12 +73,12 @@ public class FullAnnotIndexDao {
 
     public void deleteFullAnnotIndex(int fullAnnotKey, String termAcc) throws Exception {
         suDelete.update(fullAnnotKey, termAcc);
-        logDeleted.info("FAK="+fullAnnotKey+" "+termAcc);
+        logDeleted.debug("FAK="+fullAnnotKey+" "+termAcc);
     }
 
     public void insertFullAnnotIndex(int fullAnnotKey, String termAcc) throws Exception {
         suInsert.update(fullAnnotKey, termAcc);
-        logInserted.info("FAK="+fullAnnotKey+" "+termAcc);
+        logInserted.debug("FAK="+fullAnnotKey+" "+termAcc);
     }
 
     public List<String> getTermAccIdsForFullAnnotKey(int fullAnnotKey) throws Exception {
