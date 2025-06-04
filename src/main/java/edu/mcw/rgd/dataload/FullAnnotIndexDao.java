@@ -113,21 +113,25 @@ public class FullAnnotIndexDao {
             throw new Exception("Invalid ROOT_TERM_ACC for ontology "+ont.getId());
         String prefix = rootTermAcc.substring(0, pos+1)+"%";
 
-        String sql = "DELETE FROM full_annot_index WHERE full_annot_key IN("+
-                "SELECT full_annot_key FROM full_annot WHERE aspect=? "+
-                "MINUS "+
-                "SELECT full_annot_key FROM full_annot_index WHERE term_acc LIKE ?"+
-                ")";
+        String sql = """
+            DELETE FROM full_annot_index WHERE full_annot_key IN(
+                SELECT full_annot_key FROM full_annot WHERE aspect=?
+                MINUS
+                SELECT full_annot_key FROM full_annot_index WHERE term_acc LIKE ?
+            )
+            """;
         return dao.update(sql, aspect, prefix);
     }
 
     public int deleteRogueFullAnnotKeys() throws Exception {
 
-        String sql = "DELETE FROM full_annot_index WHERE full_annot_key IN("+
-                "SELECT full_annot_key FROM full_annot_index "+
-                "MINUS "+
-                "SELECT full_annot_key FROM full_annot"+
-                ")";
+        String sql = """
+            DELETE FROM full_annot_index WHERE full_annot_key IN(
+                SELECT full_annot_key FROM full_annot_index
+                MINUS
+                SELECT full_annot_key FROM full_annot
+            )
+            """;
         return dao.update(sql);
     }
 

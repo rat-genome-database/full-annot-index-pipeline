@@ -1,3 +1,6 @@
+Jun 04, 2025
+  reformatted sql queries for better readability
+
 Feb 18, 2025
   updated dependencies
 
