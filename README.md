@@ -1,9 +1,32 @@
 # full-annot-index-pipeline
-Updates FULL_ANNOT_INDEX table: big auxiliary table used to speed up many annotation queries used by RGD tools.
 
+Updates the `FULL_ANNOT_INDEX` table, a large auxiliary table that speeds up annotation queries
+used by RGD tools.
 
+## Overview
 
-NOTE on ICREMENTAL UPDATES with VERSIONING: Oct 6-9 2014
-   - implemented incremental updates by adding a versioning column into FULL_ANNOT_INDEX table
-   - overall, the load time increased twice in addition to extra space needed to hold versioning data
-   - therefore, we abandoned that feature
+For each annotation in `FULL_ANNOT`, this pipeline expands it to include rows for all child
+ontology terms. This allows queries like "find all annotations for term X and its descendants"
+to be answered with a simple index lookup instead of recursive ontology traversal.
+
+## Usage
+
+Specify one or more aspect codes on the command line:
+- `D` — disease ontology
+- `W` — pathway ontology
+- `*` — all public ontologies
+- `--fixRogueRows` — delete rows that violate integrity constraints
+
+## Logic
+
+For each aspect:
+1. Build incoming index entries from `FULL_ANNOT` expanded with ontology child terms
+2. Compare against existing `FULL_ANNOT_INDEX` rows
+3. Insert new entries, delete obsolete ones, leave matching rows unchanged
+
+## Build and run
+
+Requires Java 17. Built with Gradle:
+```
+./gradlew clean assembleDist
+```

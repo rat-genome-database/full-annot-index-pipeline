@@ -1,5 +1,6 @@
 package edu.mcw.rgd.dataload;
 
+import edu.mcw.rgd.process.MemoryMonitor;
 import edu.mcw.rgd.process.Utils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -58,6 +59,9 @@ public class FullAnnotIndex {
 
         long time0 = System.currentTimeMillis();
 
+        MemoryMonitor memoryMonitor = new MemoryMonitor();
+        memoryMonitor.start();
+
         log.info(getVersion());
         log.info("   "+dao.getConnectionInfo());
         SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -95,6 +99,8 @@ public class FullAnnotIndex {
 
         long time1 = System.currentTimeMillis();
         log.info("   finished at "+sdt.format(new Date(time1)));
+        memoryMonitor.stop();
+        log.info(memoryMonitor.getSummary());
         log.info(" === TOTAL ELAPSED TIME: "+ Utils.formatElapsedTime(time0, time1));
         log.info("");
     }
