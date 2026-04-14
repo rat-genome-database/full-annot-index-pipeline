@@ -108,9 +108,11 @@ public class FullAnnotIndexDao {
         if( ont==null )
             return 0;
         String rootTermAcc  = dao.getRootTerm(ont.getId());
+        if( rootTermAcc==null )
+            throw new Exception("No ROOT_TERM_ACC for ontology "+ont.getId());
         int pos = rootTermAcc.indexOf(':');
         if( pos<0 )
-            throw new Exception("Invalid ROOT_TERM_ACC for ontology "+ont.getId());
+            throw new Exception("Invalid ROOT_TERM_ACC '"+rootTermAcc+"' for ontology "+ont.getId());
         String prefix = rootTermAcc.substring(0, pos+1)+"%";
 
         String sql = """

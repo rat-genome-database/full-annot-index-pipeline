@@ -186,8 +186,6 @@ public class FullAnnotIndex {
 
         // handle stale rows
         int staleRowsDeleted = dao.deleteStaleFullAnnotKeys(aspect);
-        if( staleRowsDeleted<0 )
-            staleRowsDeleted = -staleRowsDeleted;
         if( staleRowsDeleted!=0 ) {
             log.info("  aspect " + aspect + " stale=" + staleRowsDeleted);
             rowsDeletedForAspect += staleRowsDeleted;
