@@ -10,6 +10,8 @@ import org.springframework.jdbc.object.BatchSqlUpdate;
 import org.springframework.jdbc.object.MappingSqlQuery;
 import org.springframework.jdbc.object.SqlUpdate;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -85,6 +87,63 @@ public class FullAnnotIndexDao {
 
         final String query = "SELECT term_acc FROM full_annot_index WHERE full_annot_key=?";
         return StringListQuery.execute(dao, query, fullAnnotKey);
+    }
+
+    /**
+     * Stream FULL_ANNOT rows for the given aspect joined with their existing FULL_ANNOT_INDEX rows,
+     * ordered by full_annot_key, and invoke the processor once per fak with the set of term_accs
+     * currently in the index. Replaces the N+1 SELECT pattern from the previous build loop with a
+     * single streaming query.
+     */
+    public void streamFullAnnotIndex(String aspect, FullAnnotIndexProcessor processor) throws Exception {
+
+        String sql = """
+            SELECT fa.full_annot_key, fa.term_acc fa_term_acc, fai.term_acc fai_term_acc
+              FROM full_annot fa
+              LEFT JOIN full_annot_index fai ON fa.full_annot_key = fai.full_annot_key
+             WHERE fa.aspect = ?
+             ORDER BY fa.full_annot_key
+            """;
+
+        try (Connection conn = dao.getDataSource().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
+
+            ps.setFetchSize(10000);
+            ps.setString(1, aspect);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                int currentFak = -1;
+                String currentTermAcc = null;
+                Set<String> existingAccs = new HashSet<>();
+
+                while (rs.next()) {
+                    int fak = rs.getInt("full_annot_key");
+                    String faTermAcc = rs.getString("fa_term_acc");
+                    String faiTermAcc = rs.getString("fai_term_acc");
+
+                    if (fak != currentFak) {
+                        if (currentFak != -1) {
+                            processor.process(currentFak, currentTermAcc, existingAccs);
+                        }
+                        currentFak = fak;
+                        currentTermAcc = faTermAcc;
+                        existingAccs = new HashSet<>();
+                    }
+                    if (faiTermAcc != null) {
+                        existingAccs.add(faiTermAcc);
+                    }
+                }
+
+                if (currentFak != -1) {
+                    processor.process(currentFak, currentTermAcc, existingAccs);
+                }
+            }
+        }
+    }
+
+    @FunctionalInterface
+    public interface FullAnnotIndexProcessor {
+        void process(int fullAnnotKey, String termAcc, Set<String> existingTermAccs) throws Exception;
     }
 
     public Collection<String> getAllActiveTermAncestorAccIds(String termAcc) throws Exception {

@@ -142,24 +142,18 @@ public class FullAnnotIndex {
 
     /**
      * SQL method that inserts/updates data in full_annot_index.  Full annot index includes all rows from full
-     * annot in addition to a row for each child term
+     * annot in addition to a row for each child term.
+     * <p>
+     * Uses a single streaming query (FULL_ANNOT LEFT JOIN FULL_ANNOT_INDEX ordered by full_annot_key)
+     * to avoid one SELECT per full_annot_key.
      * @param aspect aspect
      * @throws Exception when problems with execution of sql statements appear
      */
     public void buildFullAnnotIndex(String aspect) throws Exception {
 
-        // read all full_annot_key, term_acc into a map
-        final Map<Integer, String> map = dao.getFullAnnotInfo(aspect);
+        dao.streamFullAnnotIndex(aspect, (fullAnnotKey, termAcc, termAccIdsInRgd) -> {
 
-        for( Map.Entry<Integer, String> entry: map.entrySet() ) {
-
-            int fullAnnotKey = entry.getKey();
-            String termAcc = entry.getValue();
-
-            // for given full annot key, get term acc and parent term acc
             Collection<String> termAccIdsIncoming = dao.getAllActiveTermAncestorAccIds(termAcc);
-
-            List<String> termAccIdsInRgd = dao.getTermAccIdsForFullAnnotKey(fullAnnotKey);
 
             // handle matching
             Collection<String> termAccIdsMatching = CollectionUtils.intersection(termAccIdsInRgd, termAccIdsIncoming);
@@ -167,22 +161,18 @@ public class FullAnnotIndex {
 
             // handle insertions
             Collection<String> termAccIdsToBeInserted = CollectionUtils.subtract(termAccIdsIncoming, termAccIdsInRgd);
-            if( !termAccIdsToBeInserted.isEmpty() ) {
-                for( String termAccId: termAccIdsToBeInserted ) {
-                    dao.insertFullAnnotIndex(fullAnnotKey, termAccId);
-                    rowsInsertedForAspect ++;
-                }
+            for( String termAccId: termAccIdsToBeInserted ) {
+                dao.insertFullAnnotIndex(fullAnnotKey, termAccId);
+                rowsInsertedForAspect ++;
             }
 
             // handle deletions
             Collection<String> termAccIdsToBeDeleted = CollectionUtils.subtract(termAccIdsInRgd, termAccIdsIncoming);
-            if( !termAccIdsToBeDeleted.isEmpty() ) {
-                for( String termAccId: termAccIdsToBeDeleted ) {
-                    dao.deleteFullAnnotIndex(fullAnnotKey, termAccId);
-                    rowsDeletedForAspect ++;
-                }
+            for( String termAccId: termAccIdsToBeDeleted ) {
+                dao.deleteFullAnnotIndex(fullAnnotKey, termAccId);
+                rowsDeletedForAspect ++;
             }
-        }
+        });
 
         // handle stale rows
         int staleRowsDeleted = dao.deleteStaleFullAnnotKeys(aspect);

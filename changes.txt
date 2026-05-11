@@ -1,3 +1,6 @@
+May 11, 2026
+  replaced per-fak N+1 SELECT with a single streaming LEFT JOIN query in buildFullAnnotIndex; updated dependencies
+
 Apr 14, 2026
   fixed NPE risk in deleteStaleFullAnnotKeys; updated dependencies
 
