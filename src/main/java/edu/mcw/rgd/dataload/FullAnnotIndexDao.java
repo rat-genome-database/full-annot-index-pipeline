@@ -1,19 +1,14 @@
 package edu.mcw.rgd.dataload;
 
 import edu.mcw.rgd.dao.impl.OntologyXDAO;
-import edu.mcw.rgd.dao.spring.StringListQuery;
 import edu.mcw.rgd.datamodel.ontologyx.Ontology;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
-import org.springframework.jdbc.object.MappingSqlQuery;
-import org.springframework.jdbc.object.SqlUpdate;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.*;
 
@@ -28,48 +23,30 @@ public class FullAnnotIndexDao {
     private Logger logDeleted = LogManager.getLogger("deleted");
     private OntologyXDAO dao = new OntologyXDAO();
     private BatchSqlUpdate suInsert;
-    private SqlUpdate suDelete;
+    private BatchSqlUpdate suDelete;
 
     public String getConnectionInfo() {
         return dao.getConnectionInfo();
     }
 
-    public Map<Integer, String> getFullAnnotInfo(String aspect) throws Exception {
-        // read all full_annot_key, term_acc into a map
-        final Map<Integer, String> map = new HashMap<Integer, String>();
-        String query = "SELECT full_annot_key,term_acc FROM full_annot WHERE aspect=?";
-        MappingSqlQuery q = new MappingSqlQuery(dao.getDataSource(), query) {
-            @Override
-            protected Object mapRow(ResultSet rs, int i) throws SQLException {
-                int fullAnnotKey = rs.getInt("full_annot_key");
-                String termAcc = rs.getString("term_acc");
-                map.put(fullAnnotKey, termAcc);
-                return null;
-            }
-        };
-        q.declareParameter(new SqlParameter(Types.VARCHAR));
-        q.compile();
-        q.execute(aspect);
-        return map;
-    }
-
-
     public void prepareSqlStatements() throws Exception {
         suInsert = new BatchSqlUpdate(dao.getDataSource(),
-                "INSERT /*+ APPEND */ INTO full_annot_index (full_annot_key, term_acc) VALUES(?,?)",
+                "INSERT INTO full_annot_index (full_annot_key, term_acc) VALUES(?,?)",
                 new int[]{Types.INTEGER, Types.VARCHAR},
                 100);
         suInsert.compile();
 
-        suDelete = new SqlUpdate(dao.getDataSource(),
-                "DELETE FROM full_annot_index WHERE full_annot_key=? AND term_acc=?");
-        suDelete.declareParameter(new SqlParameter(Types.INTEGER));
-        suDelete.declareParameter(new SqlParameter(Types.VARCHAR));
+        suDelete = new BatchSqlUpdate(dao.getDataSource(),
+                "DELETE FROM full_annot_index WHERE full_annot_key=? AND term_acc=?",
+                new int[]{Types.INTEGER, Types.VARCHAR},
+                100);
         suDelete.compile();
     }
 
     public void releaseSqlStatements() throws Exception {
-        dao.executeBatch(suInsert); // release resources used by batched queries
+        // flush any remaining batched inserts and deletes
+        dao.executeBatch(suInsert);
+        dao.executeBatch(suDelete);
     }
 
 
@@ -81,12 +58,6 @@ public class FullAnnotIndexDao {
     public void insertFullAnnotIndex(int fullAnnotKey, String termAcc) throws Exception {
         suInsert.update(fullAnnotKey, termAcc);
         logInserted.debug("FAK="+fullAnnotKey+" "+termAcc);
-    }
-
-    public List<String> getTermAccIdsForFullAnnotKey(int fullAnnotKey) throws Exception {
-
-        final String query = "SELECT term_acc FROM full_annot_index WHERE full_annot_key=?";
-        return StringListQuery.execute(dao, query, fullAnnotKey);
     }
 
     /**

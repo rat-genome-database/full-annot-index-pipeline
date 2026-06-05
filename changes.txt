@@ -1,3 +1,6 @@
+Jun 05, 2026
+  batched FULL_ANNOT_INDEX deletes; removed dead code; updated dependencies
+
 May 11, 2026
   replaced per-fak N+1 SELECT with a single streaming LEFT JOIN query in buildFullAnnotIndex; updated dependencies
 
